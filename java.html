@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+
+p.a{     background-color:powderblue;        white-space:pre;  }
+
+</style>
+
+</head>
+
+<body>
+
+<p  class = "a"> 
+/**
+ * There are various solutions shown below for different kinds of work in our daily life
+ * 
+ * @author - VEERAN 
+ * @date - May 17, 2020
+ */
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SOLVING PROBLMES WITH CSV FILES
+
+import edu.duke.*;
+import org.apache.commons.csv.*;
+public class Csvprog1 {
+    
+    void findelement(CSVParser parser,String element)
+    {
+        for(CSVRecord record : parser)
+        {
+            String find = record.get("Exports");
+            if(find.contains(element))
+            {
+                String country = record.get("Country");
+                System.out.println("Country : " + country);
+            }
+        }
+    }
+    
+    void countryinfo(CSVParser parser,String countryval)
+    {
+        for(CSVRecord record : parser)
+        {
+            String result = record.get("Country");
+            //System.out.println(country);
+            if(result.equals(countryval) )
+            {
+                String export = record.get("Exports");
+                String value = record.get("Value (dollars)");
+                System.out.println(result + ":" + export + ":" +value );
+            }
+            
+        }
+    }
+    
+    void exporters(CSVParser parser,String element1,String element2)
+    {        
+        for(CSVRecord record : parser)
+        {
+            String elements = record.get("Exports");
+            if(elements.contains(element1) && elements.contains(element2) )
+            {
+                String country = record.get("Country");
+                System.out.println(country);
+            }
+            
+        }
+    }
+    
+    void noofexporters(CSVParser parser,String element)
+    {
+        int count = 0;
+        for(CSVRecord record : parser)
+        {
+            String elements = record.get("Exports");
+            if(elements.contains(element))
+            {
+                count++;
+            }
+        }
+        System.out.println("No of countries :" + count);
+    }
+    
+    void largeexporters(CSVParser parser , String value)
+    {
+        for(CSVRecord record : parser)
+        {
+            String values = record.get("Value (dollars)");
+            
+            if( values.length() > value.length() )
+            {
+               String country = record.get("Country");
+               String money = record.get("Value (dollars)");
+               System.out.print("country : " + country);
+               System.out.println(" : " + money);
+            }
+        }
+    }
+   
+    void tester()
+    {
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser();
+        //String element = "coffee";
+        //findelement(parser,element);
+        
+        //String countryval = "Nauru";
+        //countryinfo(parser,countryval);
+        
+        //String element1 = "cotton";
+        //String element2 = "flowers";
+        //exporters(parser,element1,element2);
+        
+        //String element = "cocoa";
+        //noofexporters(parser,element);
+        
+        String value = "$999,999,999,999";
+        largeexporters(parser,value);
+    }
+    
+    public static void main(String args[])
+    {
+        Csvprog1 c =new Csvprog1();
+        c.tester();
+        
+                
+    }
+
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+FINDING PERIMENTER USING THE COORDINATES GIVEN IN A FILE
+
+
+import edu.duke.*;
+import java.io.File;
+
+public class PerimeterAssignmentRunner {
+    
+    public double getPerimeter (Shape s) {
+        // Start with totalPerim = 0
+        double totalPerim = 0.0;
+        // Start wth prevPt = the last point 
+        Point prevPt = s.getLastPoint();
+        // For each point currPt in the shape,
+        for (Point currPt : s.getPoints()) {
+            // Find distance from prevPt point to currPt 
+            double currDist = prevPt.distance(currPt);
+            // Update totalPerim by currDist
+            totalPerim = totalPerim + currDist;
+            // Update prevPt to be currPt
+            prevPt = currPt;
+        }
+        // totalPerim is the answer
+        return totalPerim;
+    }
+
+    public int getNumPoints (Shape s) {
+      
+        int num=0;
+        for(Point p : s.getPoints())
+        {
+            num=num+1;
+        }
+        return num;
+    }
+
+    public double getAverageLength(Shape s) {
+
+  double perim=getPerimeter(s);
+        int numofpoints=getNumPoints(s);
+        return perim/numofpoints;
+    }
+
+    public double getLargestSide(Shape s) {
+
+        Point prevpoint=s.getLastPoint();
+        double longlen=0.0;
+        for(Point p : s.getPoints())
+        {
+          double len=prevpoint.distance(p);  
+          if(len>longlen)
+          {
+             longlen=len;
+          }
+        }
+        
+        return longlen;
+    }
+
+    public double getLargestX(Shape s) {
+
+        double largestx=0.0;
+        for(Point p : s.getPoints())
+        {
+            if(p.getX()>largestx)
+            { largestx=p.getX();  }
+        }
+        return largestx;
+    }
+
+    public double getLargestPerimeterMultipleFiles() {
+
+        DirectoryResource dr=new DirectoryResource();
+        double largestperimeter=0.0;
+        for(File f : dr.selectedFiles())
+        {
+          FileResource fr=new FileResource(f);
+          Shape s=new Shape(fr);
+          double perim=getPerimeter(s);
+          if(perim>largestperimeter)
+          { largestperimeter=perim; }
+        }
+        return largestperimeter;
+    }
+
+    public String getFileWithLargestPerimeter() {
+
+        File temp = null;
+        DirectoryResource dr=new DirectoryResource();
+        double larperi=0.0;
+        for(File f : dr.selectedFiles())
+        {
+            FileResource fr=new FileResource(f);
+            Shape s=new Shape(fr);
+            double perim=getPerimeter(s);
+            if(perim > larperi)
+            {
+                larperi=perim;
+                temp=f;
+            }
+            
+        }
+        return temp.getName();
+    }
+
+    public void testPerimeter () {
+        FileResource fr = new FileResource();
+        Shape s = new Shape(fr);
+        
+        int Numofpoints = getNumPoints(s);//number of points
+        System.out.println("Num of points:"+Numofpoints);
+        
+        double length = getPerimeter(s); //perimeter
+        System.out.println("perimeter = " + length);
+        
+        double average=getAverageLength(s);
+        System.out.println("average length="+average);
+        
+        double largestside=getLargestSide(s);
+        System.out.println("largest side="+largestside);
+        
+        double largestx=getLargestX(s);
+        System.out.println("largest x value:"+largestx);
+    }
+    
+    public void testPerimeterMultipleFiles() {
+
+        double largestperimeter =getLargestPerimeterMultipleFiles();
+        System.out.println("largest perimeter"+largestperimeter);
+    }
+
+    public void testFileWithLargestPerimeter() {
+
+        String large=getFileWithLargestPerimeter();
+        System.out.println("largest file is: "+large);
+    }
+
+    // This method creates a triangle that you can use to test your other methods
+    public void triangle(){
+        Shape triangle = new Shape();
+        triangle.addPoint(new Point(0,0));
+        triangle.addPoint(new Point(6,0));
+        triangle.addPoint(new Point(3,6));
+        for (Point p : triangle.getPoints()){
+            System.out.println(p);
+        }
+        double peri = getPerimeter(triangle);
+        System.out.println("perimeter = "+peri);
+    }
+
+    // This method prints names of all files in a chosen folder that you can use to test your other methods
+    public void printFileNames() {
+        DirectoryResource dr = new DirectoryResource();
+        for (File f : dr.selectedFiles()) {
+            System.out.println(f);
+        }
+    }
+
+    public static void main (String[] args) {
+        PerimeterAssignmentRunner pr = new PerimeterAssignmentRunner();
+        
+        pr.testPerimeter();
+    }
+}
+
+---------------------------------------------------------------------------------
+FIND TEMPARATURE, HUMIDITY ETC., FROM THE INPUT CSV FILES
+
+
+import edu.duke.*;
+import org.apache.commons.csv.*;
+import java.io.*;
+public class FindTempar {
+    
+    CSVRecord findcold(CSVParser parser)
+    {
+        CSVRecord rec = null;
+        double result = 999;
+        for(CSVRecord record : parser)
+        {
+            double tempa = Double.parseDouble( record.get("TemperatureF") );
+            if(tempa < result)
+            {
+                result = tempa;
+                rec = record;
+                
+            }
+           
+        }
+        return rec;
+        //System.out.println("result :" + result);
+    }
+    
+    
+    CSVRecord fileofcold()
+    {
+        DirectoryResource dr = new DirectoryResource();
+        CSVRecord result = null;
+        File x = null;
+        for( File f : dr.selectedFiles() )
+        {
+            FileResource fr = new FileResource(f);
+            CSVParser parser = fr.getCSVParser();
+            CSVRecord rec = findcold(parser);
+            //CSVRecord sofar = null;   
+            double rectemp = Double.parseDouble( rec.get("TemperatureF") );
+            
+            if(result == null && rectemp != -9999.0)
+            {
+                result = rec;
+                
+            }
+            
+            else if( (rectemp < Double.parseDouble( result.get("TemperatureF") )) && (rectemp != -9999.0) )
+            {
+                result = rec;
+                //x = f;
+            }
+            
+            //System.out.println(rectemp);
+        }
+       return result;
+    }
+    
+    CSVRecord findhumidity(CSVParser parser)
+    {
+        CSVRecord result = null;
+       for(CSVRecord record : parser)
+       { 
+           CSVRecord sofar = record;
+           if(result == null && record.get("Humidity") != "N/A")
+           {
+               result = sofar;
+            }
+            else if( Double.parseDouble( sofar.get("Humidity") ) < Double.parseDouble( result.get("Humidity") ) && record.get("Humidity") != "N/A" )
+            {
+                result = sofar;
+            }
+        }
+       return result;
+    }
+    
+    CSVRecord fileofhumidity(CSVParser parser)
+    {
+        CSVRecord result = null;
+        for(CSVRecord record : parser)
+        {
+           
+            if( (record.get("Humidity")).equals("N/A") )
+            { /*donothing*/ }
+            else if(  result == null  )
+            {
+                result = record;
+            }
+            else if( /*record.get("Humidity") != "N/A" &&*/ (Double.parseDouble (record.get("Humidity") ) < Double.parseDouble(result.get("Humidity") )) )
+            {
+                result = record;
+            }
+        }
+        return result;
+    }
+    
+    void testfileofhumidity()
+    {
+      DirectoryResource dr = new DirectoryResource();
+      //File result = null;
+      CSVRecord sofar = null;
+      for(File f : dr.selectedFiles() )
+      {          
+          FileResource fr = new FileResource(f);
+          CSVParser parser = fr.getCSVParser();
+          CSVRecord record = fileofhumidity(parser);
+          
+          if( (record.get("Humidity")).equals("N/A") )
+            {/*donothing*/ }
+          else if( sofar == null )
+          {
+              sofar = record;
+            }
+            else if( Double.parseDouble(record.get("Humidity")) < Double.parseDouble(sofar.get("Humidity") ) )
+            {
+              sofar = record;
+              //result = f;
+            }
+          //System.out.println( not);
+        }
+        double humid = Double.parseDouble(sofar.get("Humidity"));
+       System.out.println("Humidity :" +humid +"...Date :"+ sofar.get("DateUTC") ); 
+    }
+    
+    void avgtemp(CSVParser parser)
+    {
+        double sum = 0;
+        double number = 0;
+        for(CSVRecord record : parser)
+        {
+            sum = sum + Double.parseDouble( record.get("TemperatureF") );
+            number++;
+        }
+        System.out.println("AVG TEMP:" + (sum/number) );
+        
+    }
+    
+    void avgtempwithhumid(CSVParser parser ,int limit)
+    {
+        double temperature = 0;
+        int number = 0;
+         for(CSVRecord record : parser)
+         {
+             double humidity = Double.parseDouble (record.get("Humidity") );
+             if(humidity >= limit)
+             {
+                 double temp = Double.parseDouble (record.get("TemperatureF") );
+                 temperature = temperature + temp;
+                 number++;
+             }
+         }
+         if(temperature/number == 0 )
+         {  System.out.println("nothing found"); return;   }
+         System.out.println("Avg temp with humid >=" + limit + " is " + (temperature/number) );
+    }
+    
+    void testavgtempwithhumid()
+    {
+      FileResource fr = new FileResource();
+      CSVParser parser = fr.getCSVParser();
+      int limit = 80;
+      avgtempwithhumid(parser,limit);
+    }
+    
+    void testavgtemp()
+    {
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser();
+        avgtemp(parser);
+    }
+    
+    void testfindhumidity()
+    {
+       FileResource fr = new FileResource();
+       CSVParser parser = fr.getCSVParser();
+       CSVRecord result = findhumidity(parser);
+       System.out.println("Lowest humidity:" + result.get("Humidity") +" at time :" + result.get("DateUTC") );
+    }
+    
+    void testfileofcold()
+    {
+        CSVRecord record = fileofcold();
+        //FileResource fr = new FileResource(f);
+        //CSVParser parser = fr.getCSVParser();
+        /*for( CSVRecord record : parser)
+        {*/
+            System.out.println(record.get("TemperatureF"));
+        //}
+    }
+    
+    void testfindcold()
+    {
+        FileResource frr = new FileResource();
+        CSVParser parser = frr.getCSVParser();
+        
+        CSVRecord temp = findcold(parser);
+        System.out.println("coldest temperature :" + temp.get("TemperatureF"));       
+        
+    }
+    
+    public static void main(String args[])
+    {
+        FindTempar ft = new FindTempar();
+        //ft.testfindcold();
+        //ft.testfileofcold();
+        
+        //ft.testfindhumidity();        
+        ft.testfileofhumidity();
+        
+        //ft.testavgtemp();
+        //ft.testavgtempwithhumid();
+    }
+    
+
+}
+--------------------------------------------------------------------------------------------
+FINDING NAMES FROM THE FILE INPUT
+
+import edu.duke.*;
+import org.apache.commons.csv.*;
+public class FindNames {
+     
+     void countgirlboy(CSVParser parser)
+     {
+         int girl = 0;
+         int boy=0;
+        for(CSVRecord record : parser)
+        {
+            if(record.get(1).equals("F") )
+            {
+                girl++;
+            }
+            if(record.get(1).equals("M") )
+            {
+                boy++;
+            }
+        }
+        System.out.println("Boys:"+boy+ " Girls:"+girl );
+     }
+     
+     void testcountgirlboy()
+     {
+         FileResource fr = new FileResource();
+         CSVParser parser = fr.getCSVParser(false);
+         countgirlboy(parser);
+        }
+        
+        public static void main(String args[])
+        {
+            FindNames fn = new FindNames();
+            fn.testcountgirlboy();
+        }
+}
+
+------------------------------------------------------------------------------------------------------
+FINDING NAMES AND DIFFERERNT OTHER THINGS FROM THE INPUT FILE
+
+import edu.duke.*;
+import org.apache.commons.csv.*;
+import java.io.*;
+public class FindNamesBig {
+    
+    void totalbirths(CSVParser parser)
+    {
+        int boys = 0;
+        int girls = 0;
+        int girlcount=0,boycount=0;
+        for(CSVRecord rec:parser)
+        {
+            if(rec.get(1).equals("F") )
+            {
+                girls++;
+                girlcount = girlcount+Integer.parseInt(rec.get(2));
+            }
+            if(rec.get(1).equals("M") )
+            {
+                boys++;
+                boycount = boycount+Integer.parseInt(rec.get(2));
+            }
+            
+        }
+        System.out.println("Boys names :"+boys+ " girl names:"+girls);
+        System.out.println("total Boy's count:"+boycount +"total girl's count:"+girlcount);
+    }
+    
+    void getrank(CSVParser parser,int year,String name,String gender)
+    {
+        int rank = 0;
+        for(CSVRecord record : parser)
+        {
+            
+            if(record.get(1).equals(gender))
+            {
+                rank++;
+              if(record.get(0).equals(name))
+              {
+                 break;
+              }
+            }  
+        }
+        System.out.println("Rank:"+rank);
+    }
+    
+    void getname(CSVParser parser,String gender,int rank)
+    {
+        int r=0;
+        for(CSVRecord record : parser)
+        {
+           
+            if(record.get(1).equals(gender) )
+            {
+                r++;
+                if(r == rank)
+                {
+                    System.out.println("Name:"+record.get(0) );
+                }
+            }
+        }
+    }
+    
+    void nameinyear(CSVParser parser,String name,String gender,int bornyear,int newyear)
+    {
+        int rank = 0;
+        for(CSVRecord rec : parser)
+        {
+            if(rec.get(1).equals(gender))
+            {
+                rank++;
+               if(rec.get(0).equals(name) )
+               {
+                   //System.out.println(rank);
+                 break;  
+                }
+            }
+        }
+        
+        System.out.println("Select the new year you want:");
+        FileResource fr = new FileResource();
+        CSVParser parser2 = fr.getCSVParser(false);
+        int rank2= 0;
+        for(CSVRecord rec2 : parser2)
+        {
+            if(rec2.get(1).equals(gender) )
+            {
+                 rank2++;              
+                if(rank2 == rank)
+                {
+                   
+                    System.out.println("your name in year"+newyear+"is:"+rec2.get(0));
+                    break;
+                }
+                
+            }
+        }
+    }
+    
+    void yearofhighest(DirectoryResource dr,String name,String gender)
+    {
+        int rank=0;
+        String filename = null;
+        for( File f: dr.selectedFiles() )
+        {
+            int rank1=0;
+            FileResource fr = new FileResource(f);
+            CSVParser parser = fr.getCSVParser(false);
+            for(CSVRecord rec : parser)
+            {
+                if(rec.get(1).equals(gender)  )
+                {
+                    rank1++;
+                    if(rec.get(0).equals(name) )
+                    {
+                        break;
+                    }
+                }
+                
+            }
+            
+            if(rank == 0)
+            {
+                rank = rank1;
+                filename = f.getName().toString();
+            }
+            else
+            {
+                if(rank1 < rank)
+                {
+                    rank = rank1;
+                    filename = f.getName().toString();                    
+                }
+            }
+            //System.out.println(f.getName());
+        }
+        //System.out.println(filename);
+        System.out.println(" Rank of "+ name+ " is highest in year:"+ filename);
+      
+    }
+    
+    void avgrank(DirectoryResource dr, String name,String gender)
+    {
+        double rank = 0;
+        double count = 0;
+        for(File f : dr.selectedFiles())
+        {
+            FileResource fr = new FileResource(f);
+            CSVParser parser = fr.getCSVParser(false);
+            for(CSVRecord rec : parser)
+            {
+                if(rec.get(1).equals(gender))
+                {
+                 rank++;
+                 if(rec.get(0).equals(name))
+                 {
+                     break;
+                    }
+                }
+            }
+            count++;
+        }
+        System.out.println(rank/count);
+    }
+    
+    void totalbirthshigher(CSVParser parser,String name,String gender)
+    {
+        int result = 0;
+        for(CSVRecord rec:parser )
+        {
+            if(rec.get(1).equals(gender) )
+            {
+                if(rec.get(0).equals(name))
+                {
+                    break;
+                }
+                result = result+ Integer.parseInt(rec.get(2));
+                
+            }
+        }
+        System.out.println(result);
+    }
+    
+    void testtotalbirths()
+    {
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser(false);
+        totalbirths(parser);
+    }
+    
+    void testgetrank()
+    {
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser(false);
+        getrank(parser,2012,"Frank","M");
+    }
+
+    void testgetname()
+    {
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser();
+        getname(parser,"F",350);
+    }
+    
+    void testnameinyear()
+    {
+        System.out.println("Select the year you were born in:");
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser(false);
+        nameinyear(parser,"Owen","M",1974,2014);
+    }
+    
+    void testyearofhighest()
+    {
+        DirectoryResource dr = new DirectoryResource();
+        yearofhighest(dr,"Mich","M");
+    }
+    
+    void testavgrank()
+    {
+        DirectoryResource dr = new DirectoryResource();
+        avgrank(dr,"Robert","M");
+    }
+    
+    void testtotalbirthshigher()
+    {
+        FileResource fr = new FileResource();
+        CSVParser parser=fr.getCSVParser(false);
+        totalbirthshigher(parser,"Drew","M");
+    }
+    
+    public static void main(String args[])
+    {
+        FindNamesBig f = new FindNamesBig();
+        //f.testtotalbirths();
+        //f.testgetrank();
+        f.testgetname();
+        //f.testnameinyear();
+        //f.testyearofhighest();
+        //f.testavgrank();
+        //f.testtotalbirthshigher();
+    }
+    
+}
+
+
+
+-------------------------------------------------------------------------------------------------------
+STRING OPERATIONS 1 
+
+OPERATIONS OF FILES CONTAINING DNA DATA
+
+import java.util.*;
+public class FindDNA1 {
+    
+     static int atgindex(String dna)
+    {   
+        String crctstr = dna.toUpperCase();
+        int atgindex1 = crctstr.indexOf("ATG");
+        if(atgindex1== -1)
+        {
+            System.out.println("not found ATG");
+        }
+        return atgindex1;
+    }
+    static int taaindex(String dna)
+    {
+        String crctstr = dna.toUpperCase();
+        int taaindex1 = crctstr.indexOf("TAA");
+        if(taaindex1== -1)
+        {
+            System.out.println("not found taa");
+        }
+        return taaindex1;
+    }
+        
+    public void FindDna(String dna,int atgindex,int taaindex)
+    {
+        Scanner sc=new Scanner(System.in);
+        
+        if( (taaindex-atgindex)%3 == 0)
+        {
+            System.out.println("enter 1 if the given dna String is Uppercase, enter 2 if it is lower case");
+            
+            int x=sc.nextInt();
+            if(x==1)
+            {
+            System.out.println("the dna is" + dna.substring(atgindex,taaindex+3)) ;
+            }
+            else if(x==2) 
+            {
+                String res=dna.substring(atgindex,taaindex+3);
+                System.out.println("the dna is"+res.toLowerCase());
+            }
+        }
+        else
+        {
+            System.out.println("the dna is not correct");
+        }
+            
+    }
+    
+    public void testdnamethod()
+    {
+        String dna="jbadjhatgwjnsnftaalbc" ;
+        int startcondon = atgindex(dna);
+        int endcondon = taaindex(dna);
+        FindDna(dna,startcondon,endcondon);  
+    }
+    public static void main(String args[])
+    {
+        FindDNA1 fd1 = new FindDNA1();
+        fd1.testdnamethod();
+    }
+}
+--------------------------------------------------------------------------------------------------------------------------------------------
+public class Part3 {
+   boolean twoOccurences(String stringa,String stringb)
+   {
+       if(stringa.indexOf(stringb) >= 0 )
+       {
+           int index=stringa.indexOf(stringb);
+         
+           if(stringa.indexOf(stringb,index+1) > 0)
+           {
+             
+            return true;
+           }
+           else
+           {
+               System.out.println("ocurred only once");
+               return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+           
+    }
+    
+    String lastpart(String a,String b)
+    {
+        int index=a.indexOf(b);
+        if(index==-1)
+        {
+            return a;
+        }
+        
+        int length = a.length();
+        String result = a.substring(index+b.length(),length);
+        return result;
+            
+    }
+    void testingTwoOccurences()
+    {
+      
+        System.out.println(twoOccurences("banana","a"));
+        System.out.println(twoOccurences("veeeerahdgjsjb","a"));
+        System.out.println(twoOccurences("ldbflanlklksdjjlkbj","lk"));
+    }
+    void testingLastpart()
+    {
+        System.out.println( lastpart("banana","a") );
+        System.out.println( lastpart("kasgjhslfksh","zksdgk") );
+        System.out.println( lastpart("banaasgnsvnna","s") );
+    }
+    public static void main(String args[])
+    {
+        Part3 p3=new Part3();
+        p3.testingLastpart();
+        
+    }
+    
+}
+------------------------------------------------------------------------------------------------
+import edu.duke.*;
+import java.util.*;
+public class Part4 {
+     public static void main(String args[])
+     {
+    URLResource f = new URLResource("http://www.dukelearntoprogram.com/course2/data/manylinks.html");
+     
+     for( String word : f.words() )
+     {
+         String wordlower = word.toLowerCase();
+         if( wordlower.indexOf("youtube.com") >= 0 )
+         {
+             int pos=wordlower.indexOf("youtube.com");
+           int beg = word.lastIndexOf("\"",pos);
+           int end = word.indexOf("\"",pos+1);
+           System.out.println(word.substring(beg+1,end));
+             //int start = word.indexOf("\"");
+           //int end = word.lastIndexOf("\"");
+          //System.out.println(word.substring(start+1,end));
+         }
+          
+            }
+     }
+      
+
+}
+--------------------------------------------------------------------------------------------------------
+STRING OPERATIONS 2
+
+PART 1
+
+public class Part1 {
+    
+    int findcondon(String dna, String condon, int startindex)
+    {
+        
+        int condonindex = dna.indexOf(condon,startindex);
+        while(condonindex != -1)
+        {
+          if( (condonindex - startindex) %3 == 0)
+          {
+            return condonindex;
+          }
+          else
+          {
+            condonindex = dna.indexOf(condon,condonindex+1);
+          }
+        }
+        
+       return -1;
+    }
+    
+    void findgene(String dna)
+    {
+        int startindex = dna.indexOf("ATG");
+        while(true)//here
+        {
+        int taaindex = findcondon(dna,"TAA",startindex);
+        int tagindex = findcondon(dna,"TAG",startindex);  
+        int tgaindex = findcondon(dna,"TGA",startindex);
+        int min;
+        int minindex;
+        if( taaindex == -1 || (tagindex != -1 && tagindex<taaindex) )
+        {
+            min = tagindex; 
+        }
+        else
+        {
+            min = taaindex;
+        }
+        if(min == -1 || (tgaindex !=-1 && tgaindex<min) )
+        {
+            minindex = tgaindex;
+        }
+        else 
+        {
+            minindex = min;
+        }
+        if(minindex == -1)
+        {
+             System.out.println("no more gene");
+            return ;  
+        }
+        System.out.println("the gene is:" + dna.substring(startindex, minindex+3) );
+        //System.out.println(taaindex);
+        startindex = dna.indexOf("ATG",minindex+3);
+        if(startindex == -1)
+        {   System.out.println("That's all"); break;   }
+        }
+    }
+    
+    
+    
+    void testfindcondon()
+    {
+        String dna = "GKJATGGHJFGHDGGTAA";
+        int startindex = dna.indexOf("ATG");
+        System.out.println(findcondon(dna,"TAA",startindex) );
+    }
+    
+    void testfindgene()
+    {                  //1                      1      2           2        3              3       
+        String dna = "GKJATGGHJFGHDGTAAGHDGJHGTAGFGHJNJTGAHFGJKUATGGHJYHTAAYTAAHJKINYATGTHYTGHQTAAQSTGADFS";
+        findgene(dna);
+    }
+    
+    public static void main(String args[])
+    {
+        Part1 p1=new Part1();
+        //p1.testfindcondon();
+        p1.testfindgene();
+    }
+
+}
+
+-------------------------------------------------------------------------------------------------
+PART 2
+
+
+public class Part2 {
+    
+    int HowMany(String stra,String strb)
+    {
+        int index = strb.indexOf(stra);
+        int count = 0;
+       while(index != -1)
+        {
+       
+        if( index >= 0 )
+        {
+            count++;
+        }
+        else
+        { System.out.println("nothing found"); }
+        index = strb.indexOf(stra,index+2);
+        
+       }
+       return count;
+    }
+    
+    public static void main(String args[])
+    {
+      Part2 p2=new Part2();
+      int result = p2.HowMany("aa","kgdkaaaaaaaakgsdkbaajsbaa");
+      System.out.println("count is:" + result);
+    }
+
+}
+-----------------------------------------------------------------------------------------------
+PART 3
+
+
+public class Part3 {
+    
+    int findcondon(String dna, String condon, int startindex)
+    {
+        
+        int condonindex = dna.indexOf(condon,startindex);
+        while(condonindex != -1)
+        {
+          if( (condonindex - startindex) %3 == 0)
+          {
+            return condonindex;
+          }
+          else
+          {
+            condonindex = dna.indexOf(condon,condonindex+1);
+          }
+        }
+        
+       return -1;
+    }
+    
+    
+     void findgene(String dna)
+    {
+        int startindex = dna.indexOf("ATG");
+        int count = 0;
+        while(true)//here
+        {
+        int taaindex = findcondon(dna,"TAA",startindex);
+        int tagindex = findcondon(dna,"TAG",startindex);  
+        int tgaindex = findcondon(dna,"TGA",startindex);
+        int min;
+        int minindex;
+        if( taaindex == -1 || (tagindex != -1 && tagindex<taaindex) )
+        {
+            min = tagindex; 
+        }
+        else
+        {
+            min = taaindex;
+        }
+        if(min == -1 || (tgaindex !=-1 && tgaindex<min) )
+        {
+            minindex = tgaindex;
+        }
+        else 
+        {
+            minindex = min;
+        }
+        if(minindex == -1)
+        {
+             System.out.println("no more gene");
+            return ;  
+        }
+        //System.out.println("the gene is:" + dna.substring(startindex, minindex+3) );
+        count++;
+        //System.out.println(taaindex);
+        startindex = dna.indexOf("ATG",minindex+3);
+        if(startindex == -1)
+        {   System.out.println("Number of genes:" + count); break;   }
+        }
+    }
+    
+    void countgenes()
+    {
+        String dna = "GKJATGGHJFGHDGTAAGHDGJHGTAGFGHJNJTGAHFGJKUATGGHJYHTAAYTAAHJKINYATGTHYTGHQTAAQSTGADFS";
+        findgene(dna);
+    }
+    public static void main(String args[])
+    {
+        Part3 p3 = new Part3();
+        p3.countgenes();
+    }
+   
+
+}
+-----------------------------------------------------------------------------
+QUIZ 1
+
+
+public class Quiz {
+    public void findAbc(String input) {
+    int index = input.indexOf("abc",2);
+    while (true) {
+        if (index == -1) {
+            break;
+        }
+        String found = input.substring(index+1, index+4);
+        System.out.println(index);
+        System.out.println(index+4 );
+        index = input.indexOf("abc", index+4);
+    }
+}
+   public void test() {
+    //no code yet
+    findAbc("abcdabc");
+}
+public static void main(String args[])
+{
+    Quiz q =new Quiz();
+    q.test();
+}
+}
+
+------------------------------------------------------------------------------
+QUIZ 3
+
+public class Quiz {
+    public void findAbc(String input) {
+    int index = input.indexOf("abc",2);
+    while (true) {
+        if (index == -1) {
+            break;
+        }
+        String found = input.substring(index+1, index+4);
+        System.out.println(index);
+        System.out.println(index+4 );
+        index = input.indexOf("abc", index+4);
+    }
+}
+   public void test() {
+    //no code yet
+    findAbc("abcdabc");
+}
+public static void main(String args[])
+{
+    Quiz q =new Quiz();
+    q.test();
+}
+}
+---------------------------------------------------------------------------------
+STRING OPEARATIONS 3
+
+import edu.duke.*;
+public class Part1 {
+    
+    int findcondon(String dna,String condon,int startindex)
+    {
+       
+       int index = dna.indexOf(condon,startindex);
+        
+       while(index != -1)
+       {
+       if( (index - startindex)%3 == 0)
+       {
+          return index;
+        }
+        else
+        {
+            index = dna.indexOf(condon,index+1);
+        }
+       
+       }
+       return index;
+    }   
+     
+    
+   StorageResource getgenes(String dna,int startindex )
+    {
+        StorageResource sr = new StorageResource();
+        while(true)
+        {
+       int taaindex = findcondon(dna,"TAA",startindex);
+       int tagindex = findcondon(dna,"TAG",startindex);
+       int tgaindex = findcondon(dna,"TGA",startindex);
+        int condonindex;
+        int index;
+       if(taaindex == -1 || (tagindex != -1 && tagindex < taaindex  ) )
+       {
+           index = tagindex;
+        }
+        else
+        {
+            index = taaindex;
+        }
+       if(index == -1 || (tgaindex != -1 && tgaindex < index ) )
+       {
+           condonindex = tgaindex;
+        }
+        else
+        {
+            condonindex = index;
+        }
+       //System.out.println(condonindex);
+       if(condonindex == -1)
+       {
+           break;
+        }
+       //System.out.println("the gene:" + dna.substring(startindex,condonindex+3) ); 
+       String x = dna.substring(startindex,condonindex+3);
+       sr.add(x);
+       startindex = dna.indexOf("ATG",condonindex+3);
+       if(startindex == -1)
+       {
+            break;
+        }
+    }    
+    return sr;    
+    }
+    
+      
+    float cgratio(String dna)
+    {
+        int i;
+        int count = 0;
+        int index = dna.indexOf("C");
+        while(index >= 0)
+        {
+            count++;
+            index = dna.indexOf("C",index+1);
+        }
+        
+        int index1 = dna.indexOf("G");
+        while(index1 >= 0)
+        {
+            count++;
+            index1 = dna.indexOf("G",index1+1);
+        }
+        int length = dna.length();
+      
+        return ((float)count/length);               
+    }
+    
+    void processgenes(StorageResource sr)
+    {
+        int count = 0;
+        for(String s : sr.data())
+        { 
+            
+            if( s.length() > 60 )
+            {
+                count++;
+                System.out.println("String longer than 9 : " +s+ "\n");
+            }            
+        }
+        System.out.println("No of genes longer than 9 :" + count);
+       
+        int count1 = 0;
+        for(String s : sr.data())
+        {          
+            
+            float cg = cgratio(s);
+            //System.out.println(cg);
+            if ( cg > 0.35)
+            {
+                count1++;
+                System.out.println("String with cg ratio > 0.35 :" +s+ "\n");
+            }            
+        }
+        System.out.println("No of genes with cgratio > 0.35:"+count1);
+        
+        int longgene = 0;
+        for(String s : sr.data() )
+        {
+            if(s.length() > longgene)
+            {
+                longgene=s.length();
+            }
+        }
+        System.out.println("longest gene length : " + longgene);
+    }
+    
+    
+    /*void testcondonindex()
+    {
+        //............0123456789
+        String dna = "ATGGDJHGBTAAGHTJHBTAGHJY";
+        int startindex = dna.indexOf("ATG");
+        System.out.println(findcondon(dna,"TAG",startindex) );
+    }*/
+    
+    void printsr()
+    {
+        //String dna = "ATGGDJHGBHAAGHTJHBTAGHJYCCDATGGHTGHJHGFTAGHJYATGHJYTGAHYGATGHJYTGHTHGYJHTAG";
+        URLResource u = new URLResource("https://users.cs.duke.edu/~rodger/GRch38dnapart.fa");
+        for(String r : u.words() )
+        {
+            String dna = r;
+        int startindex = dna.indexOf("ATG");
+        
+        StorageResource x = getgenes(dna,startindex);
+        for(String s : x.data())
+        {
+            System.out.println("the gene:" +s+ "\n");
+        }
+        
+       }
+    }
+    
+    void testprocessgenes()
+    {//===============S.................E        S...........E     S.....E     S..............E   
+        //String dna = "ATGGDJHGBHAAGHTJHBTAGHJYCCDATGGHTGHJHGFTAGHJYATGHJYTGAHYGATGHJYTGHTHGYJHTAG";
+        URLResource u = new URLResource("https://users.cs.duke.edu/~rodger/GRch38dnapart.fa");
+        int count =0;
+        
+        for(String r : u.words() )
+        {
+            
+            String dna = r;
+        int startindex = dna.indexOf("ATG");
+        StorageResource s = getgenes(dna,startindex);
+        processgenes(s);
+       
+    } System.out.println(count);
+    }
+    
+    
+    
+    public static void main(String args[])
+    {
+      Part1 p = new Part1();
+      
+      //String dna = "ATGGHTGHJHGFTAG";
+      //p.testfindgene();
+      //p.testcondonindex();
+      //p.printsr();
+      //System.out.println("CG ratio :"+p.cgratio(dna));
+      p.testprocessgenes();
+    }
+    
+
+}
+------------------------------------------------------------------------------------------------------------
+
+
+import edu.duke.*;
+public class Part3 {
+    
+    int findcondon(String dna,String condon,int startindex)
+    {
+       
+       int index = dna.indexOf(condon,startindex);
+        
+       while(index != -1)
+       {
+       if( (index - startindex)%3 == 0)
+       {
+          return index;
+        }
+        else
+        {
+            index = dna.indexOf(condon,index+3);
+        }
+       
+       }
+       return index;
+    }   
+    
+    void getgenes(String dna,int startindex )
+    {
+        
+        while(true)
+        {
+       int taaindex = findcondon(dna,"TAA",startindex);
+       int tagindex = findcondon(dna,"TAG",startindex);
+       int tgaindex = findcondon(dna,"TGA",startindex);
+        int condonindex;
+        int index;
+       if(taaindex == -1 || (tagindex != -1 && tagindex < taaindex  ) )
+       {
+           index = tagindex;
+        }
+        else
+        {
+            index = taaindex;
+        }
+       if(index == -1 || (tgaindex != -1 && tgaindex < index ) )
+       {
+           condonindex = tgaindex;
+        }
+        else
+        {
+            condonindex = index;
+        }
+       //System.out.println(condonindex);
+       if(condonindex == -1)
+       {
+           break;
+        }
+       //System.out.println("the gene:" + dna.substring(startindex,condonindex+3) ); 
+       String x = dna.substring(startindex,condonindex+3);
+       
+       System.out.println("THE GENE:" + x);
+       
+       startindex = dna.indexOf("ATG",condonindex+3);
+       if(startindex == -1)
+       {
+            break;
+        }
+    }    
+        
+    }
+    
+    void testgetgenes()
+    {
+       FileResource fr = new FileResource("brca1line.fa");
+       String dna= fr.asString();
+       String x = dna.toUpperCase();
+       int startindex = x.indexOf("ATG");
+       getgenes(x,startindex);
+    }
+    
+    public static void main(String args[])
+    {
+        Part3 p3 =new Part3();
+        p3.testgetgenes();
+    }
+    
+    
+}
+------------------------------------------------------------------------------------------------------------------
+</p>
+
+</body>
+</html>
